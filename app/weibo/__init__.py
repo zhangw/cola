@@ -54,6 +54,13 @@ def get_job_desc():
                           starts, unit_cls=WeiboUserBundle, login_hook=login_hook)
     
 if __name__ == "__main__":
+    """
     from cola.context import Context
     ctx = Context(local_mode=True)
     ctx.run_job(os.path.dirname(os.path.abspath(__file__)))
+    """
+    #新的短信验证方式，不支持多线程同时登陆，会造成发生短信颜值码频率太高的错误，所以先使用单线程的方式实现
+    uname = str(user_config['job']['login'][0]['username'])
+    passwd = str(user_config['job']['login'][0]['password'])
+    loginer = WeiboLogin(MechanizeOpener(),uname,passwd)
+    loginer.login()

@@ -24,11 +24,11 @@ job:
     deduper:
       cls: cola.core.dedup.FileBloomFilterDeduper
   mongo:
-    host: localhost
+    host: 192.168.59.103
     port: 27017
   login:
-    - username: # username
-      password: # password
+    - username: 18768166827
+      password: -random110110
   starts:
     - uid: 3211200050
     - uid: 1898353550
