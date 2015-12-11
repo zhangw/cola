@@ -108,7 +108,8 @@ class MechanizeOpener(Opener):
         
         self.cj = cookielib.LWPCookieJar()
         if cookie_filename is not None:
-            self.cj.load(cookie_filename)
+          self.cj = cookielib.LWPCookieJar(filename = cookie_filename)
+          self.cj.load(cookie_filename)
         self.browser.set_cookiejar(self.cj)
         self.browser.set_handle_equiv(True)
         self.browser.set_handle_gzip(True)

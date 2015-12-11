@@ -110,7 +110,12 @@ class RSAKey():
       return None
       
 
-  def encrypt(self,a):
+  def encrypt(self,a,**kwargs):
+    global bb,bc,bd,be
+    bb = kwargs['bb'] if kwargs.has_key('bb') else bb
+    bc = kwargs['bc'] if kwargs.has_key('bc') else bc
+    bd = kwargs['bd'] if kwargs.has_key('bd') else bd
+    be = kwargs['be'] if kwargs.has_key('be') else be
     """var b = bp(a, this.n.bitLength() + 7 >> 3);
     if (b == null )
       return null ;
@@ -347,6 +352,7 @@ class E:
         a[i+b.t] -= DV
         a[i+b.t+1] = 1
     """a.t > 0 && (a[a.t - 1] += b.am(c, b[c], a, 2 * c, 0, 1));"""
+    c = b.t - 1# c == 36
     if a.t > 0:
       a[a.t-1] += b.am(c, b[c], a, 2*c, 0, 1)
     a.s = 0
@@ -452,8 +458,8 @@ class E:
                 s = r - l,
                   t = b == null ? e() : b;"""
       n = m * (1 << F1) + (h[l - 2] >> F2 if l > 1 else 0)
-      o = FV / n
-      p = (1 << F1) / n
+      o = FV / float(n)
+      p = (1 << F1) / float(n)
       q = 1 << F2
       r = c.t
       s = r - l
@@ -796,7 +802,7 @@ class Z:
 
 def main():
   pubkey="EB2A38568661887FA180BDDB5CABD5F21C7BFD59C090CB2D245A87AC253062882729293E5506350508E7F9AA3BB77F4333231490F915F6D63C55FE2F08A49B353F444AD3993CACC02DB784ABBB8E42A9B1BBFFFB38BE18D78E87A0E41B9B8F73A928EE0CCEE1F6739884B9777E4FE9E88A1BBE495927AC4A799B3181D6442443"
-  str = '1449540151\tRDLN1S\n123456'
+  str = '1449678890\tCYYZN5\n009000'
   instance_RSAKey = RSAKey()
   instance_RSAKey.setPublic(pubkey,'10001')
   """b = e.encrypt([me.servertime, me.nonce].join("\t") + "\n" + b)"""
@@ -824,8 +830,9 @@ def encryptpk_fromstring(pubkey,bit=16):
   if c.is_integer() and c>=1 and c<=8:
     c = int(c)
     ret = {}
-    t,s,g,e,f=0,0,0,len(pubkey)-1,False
-    while(e>=0):
+    t,s,g,e,f=0,0,0,len(pubkey),False
+    while e-1 >= 0:
+      e -= 1
       char,h = pubkey[e],0
       ischar = type(char) == str
       if c==8 and ischar:
@@ -850,7 +857,6 @@ def encryptpk_fromstring(pubkey,bit=16):
       if g==0:
         ret[t] = h
         t = t+1
-        
       elif (g+c) > DB:
         ret[t-1] |= (h & (1 << DB-g) - 1) << g
         ret[t] = h >> DB -g
@@ -859,7 +865,6 @@ def encryptpk_fromstring(pubkey,bit=16):
         ret[t-1] |= h << g
       g += c
       g = g - DB if g >= DB else g
-      e = e-1
     #end of the loop
     fl = ord(pubkey[0]) if type(pubkey[0]) == str else int(pubkey[0])
     #fl should be in range(0,123),if fl & 128 !=0 the fl should between(128,256)

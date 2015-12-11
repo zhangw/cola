@@ -37,3 +37,5 @@ job:
     comment: no
     like: no
   clear: no
+  cookies:
+    filename: cookies.txt

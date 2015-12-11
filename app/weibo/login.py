@@ -109,7 +109,7 @@ class WeiboLogin(object):
               'from': '',
               'savestate': '7',
               'userticket': '1',
-              'pagerefer': "http://login.sina.com.cn/sso/logout.php?entry=miniblog&r=http%3A%2F%2Fweibo.com%2Flogout.php%3Fbackurl%3D%252F",
+              'pagerefer': "",
               'cfrom' : '1',
               'vsnf': '1',
               'su': self.get_user(self.username),
@@ -121,7 +121,7 @@ class WeiboLogin(object):
               'sp': self.get_passwd(authcode, pubkey, servertime, nonce),
               'sr': "1440*900",
               'encoding': 'UTF-8',
-              'prelt': '99',
+              'prelt': '503',
               'url': 'http://weibo.com/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack',
               'returntype': 'META'
             }
@@ -138,11 +138,14 @@ class WeiboLogin(object):
                 print text
             
             regex = re.compile('\((.*)\)')
-            json_data = json.loads(regex.search(text).group(1))
-            result = json_data['result'] == True
-            if result is False and 'reason' in json_data:
-                return result, json_data['reason']
-            return result
+            try:
+              json_data = json.loads(regex.search(text).group(1))
+              result = json_data['result'] == True
+              if result is False and 'reason' in json_data:
+                  return result, json_data['reason']
+              return result
+            except:
+              raise WeiboLoginFailure
             """
               entry:weibo
               gateway:1
